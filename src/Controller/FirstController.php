@@ -33,6 +33,30 @@ class FirstController
 
         $rows = "";
         $maxValue = 0;
+        for ($i = 1; $i <= 100; $i++)
+        {
+            $num = rand($min, $max);
+
+            if ($this -> isPrime($num)) {
+                $rows .= str_replace("{{ number }}", $num, $tpl_prime);
+            }
+            else {
+                $rows .= str_replace("{{ number }}", $num, $tpl_normal);
+            }
+
+            if ($i % 10 == 0) {
+                $rows .= $tpl_rowsep;
+            }
+
+            if ($num > $maxValue) {
+                $maxValue = $num;
+            }
+        }
+
+        $output = $tpl_table;
+        $output = str_replace("{{ rows }}", $rows, $output);
+        $output = str_replace("{{ maximum }}", $maxValue, $output);
+        return $output;
     }
 
     /**
@@ -44,7 +68,8 @@ class FirstController
      */
     public function getNumberTable(Request $request, int $minValue = 0, int $maxValue = 999) : Response
     {
-        $str = "TABLE FROM {$minValue} to {$maxValue}";
+        //$str = "TABLE FROM {$minValue} to {$maxValue}";
+        $str = $this->getTable($minValue, $maxValue);
         return new Response($str);
     }
 }
